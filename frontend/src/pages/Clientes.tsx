@@ -222,16 +222,10 @@ const Clientes: React.FC = () => {
                 <CardContent className="pt-4 sm:pt-6 flex-1 flex flex-col">
                   <div className="flex flex-col sm:flex-row items-start justify-between gap-3 flex-1">
                     <div className="flex-1 min-w-0 w-full">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1" style={{width: '220px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
                         <h3 className="text-sm sm:text-base font-semibold break-words">{cliente.nome}</h3>
                         {cliente.isLead && (
                           <Badge variant="secondary">Lead</Badge>
-                        )}
-                        {cliente.convertedFromLead && (
-                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-300 dark:border-blue-800">
-                            <UserPlus className="h-3 w-3 mr-1" />
-                            Ex-Lead
-                          </Badge>
                         )}
                       </div>
                       {cliente.mensagem && cliente.isLead && (
@@ -240,35 +234,10 @@ const Clientes: React.FC = () => {
                       
                       {/* Informações de conversão de lead */}
                       {cliente.convertedFromLead && (
-                        <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
-                          <div className="flex items-center gap-2 mb-2">
-                            <UserPlus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                            <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
-                              Convertido de Lead
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-600 dark:text-blue-400">
-                            {cliente.leadSource && (
-                              <div className="flex items-center gap-1">
-                                <span className="font-medium">Origem:</span>
-                                <span className="capitalize">{cliente.leadSource}</span>
-                              </div>
-                            )}
-                            {cliente.leadEventType && (
-                              <div className="flex items-center gap-1">
-                                <span className="font-medium">Tipo:</span>
-                                <span className="capitalize">{cliente.leadEventType}</span>
-                              </div>
-                            )}
-                            {cliente.leadMessage && (
-                              <div className="sm:col-span-2">
-                                <span className="font-medium">Mensagem:</span>
-                                <p className="mt-1 text-blue-700 dark:text-blue-300 line-clamp-2 italic">
-                                  "{cliente.leadMessage}"
-                                </p>
-                              </div>
-                            )}
-                          </div>
+                        <div className="mb-3">
+                          <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-300 dark:border-green-800">
+                            Lead Convertido
+                          </Badge>
                         </div>
                       )}
 
