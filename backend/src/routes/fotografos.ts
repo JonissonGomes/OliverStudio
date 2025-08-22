@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { requireAuth, AuthenticatedRequest } from '../middleware/auth';
 import { FotografoModel } from '../models/Fotografo';
 import { EventoModel } from '../models/Evento';
+import { requireRole } from '../middleware/role';
 
 const router = Router();
 
@@ -13,45 +14,62 @@ const fotografoSchema = z.object({
 	especialidades: z.array(z.string()).default([]),
 });
 
-router.get('/', requireAuth, async (req: AuthenticatedRequest, res: Response) => {
-	const items = await FotografoModel.find({ userId: req.user!.id }).sort({ nome: 1 }).lean();
-	res.json(items.map(i => ({
-		id: String(i._id),
-		nome: i.nome,
-		contato: i.contato,
-		email: i.email,
-		especialidades: i.especialidades || [],
-	})));
+// Rota para listar todos os fotógrafos (sem filtro de userId)
+router.get('/', requireAuth, async (_req, res) => {
+	try {
+		const fotografos = await FotografoModel.find({}).sort({ nome: 1 });
+		res.json(fotografos);
+	} catch (error) {
+		console.error('Erro ao buscar fotógrafos:', error);
+		res.status(500).json({ message: 'Erro interno do servidor' });
+	}
 });
 
-router.post('/', requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+// Rota para buscar fotógrafo por ID (sem filtro de userId)
+router.get('/:id', requireAuth, async (req, res) => {
+	try {
+		const fotografo = await FotografoModel.findById(req.params.id);
+		if (!fotografo) {
+			return res.status(404).json({ message: 'Fotógrafo não encontrado' });
+		}
+		res.json(fotografo);
+	} catch (error) {
+		console.error('Erro ao buscar fotógrafo:', error);
+		res.status(500).json({ message: 'Erro interno do servidor' });
+	}
+});
+
+// Rota para criar fotógrafo (apenas admin, gerente)
+router.post('/', requireAuth, requireRole(['admin', 'gerente']), async (req: AuthenticatedRequest, res: Response) => {
 	const parse = fotografoSchema.safeParse(req.body);
 	if (!parse.success) return res.status(400).json({ message: 'Invalid data', errors: parse.error.issues });
 	const doc = await FotografoModel.create({ ...parse.data, userId: req.user!.id });
 	res.status(201).json({ id: String(doc._id) });
 });
 
-router.put('/:id', requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+// Rota para atualizar fotógrafo (apenas admin, gerente)
+router.put('/:id', requireAuth, requireRole(['admin', 'gerente']), async (req: AuthenticatedRequest, res: Response) => {
 	const parse = fotografoSchema.partial().safeParse(req.body);
 	if (!parse.success) return res.status(400).json({ message: 'Invalid data', errors: parse.error.issues });
 	await FotografoModel.updateOne({ _id: req.params.id, userId: req.user!.id }, { $set: parse.data });
 	res.json({ ok: true });
 });
 
-router.delete('/:id', requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+// Rota para deletar fotógrafo (apenas admin, gerente)
+router.delete('/:id', requireAuth, requireRole(['admin', 'gerente']), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		// Buscar o fotógrafo antes de deletar para obter o nome
-		const fotografo = await FotografoModel.findOne({ _id: req.params.id, userId: req.user!.id });
+		const fotografo = await FotografoModel.findById(req.params.id);
 		if (!fotografo) {
 			return res.status(404).json({ message: 'Fotógrafo não encontrado' });
 		}
 
 		// Deletar o fotógrafo
-		await FotografoModel.deleteOne({ _id: req.params.id, userId: req.user!.id });
+		await FotografoModel.deleteOne({ _id: req.params.id });
 
-		// Limpar referências nos eventos
+		// Limpar referências nos eventos de todos os usuários
 		await EventoModel.updateMany(
-			{ userId: req.user!.id, fotografos: fotografo.nome },
+			{ fotografos: fotografo.nome },
 			{ $pull: { fotografos: fotografo.nome } }
 		);
 

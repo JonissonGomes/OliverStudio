@@ -9,7 +9,7 @@ import { useClientes } from '@/hooks/useClientes';
 import { useEventos } from '@/hooks/useEventos';
 import { InputMask } from '@/components/ui/input-mask';
 import { Cliente, TIPOS_EVENTO } from '@/types';
-import { Plus, Edit, Trash2, Search, Users, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Users, Mail, Phone, MapPin, Calendar, UserPlus, Globe } from 'lucide-react';
 import { getEventTypeColor } from '@/utils/eventColors';
 import { useToast } from '@/hooks/use-toast';
 
@@ -222,7 +222,7 @@ const Clientes: React.FC = () => {
                 <CardContent className="pt-4 sm:pt-6 flex-1 flex flex-col">
                   <div className="flex flex-col sm:flex-row items-start justify-between gap-3 flex-1">
                     <div className="flex-1 min-w-0 w-full">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1" style={{width: '220px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
                         <h3 className="text-sm sm:text-base font-semibold break-words">{cliente.nome}</h3>
                         {cliente.isLead && (
                           <Badge variant="secondary">Lead</Badge>
@@ -232,6 +232,15 @@ const Clientes: React.FC = () => {
                         <p className="text-xs text-muted-foreground mb-2 line-clamp-3">{cliente.mensagem}</p>
                       )}
                       
+                      {/* Informações de conversão de lead */}
+                      {cliente.convertedFromLead && (
+                        <div className="mb-3">
+                          <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-300 dark:border-green-800">
+                            Lead Convertido
+                          </Badge>
+                        </div>
+                      )}
+
                       <div className="space-y-2 text-xs text-muted-foreground mb-3">
                         <div className="flex items-center gap-2">
                           <Mail className="h-3 w-3 flex-shrink-0" />
@@ -279,7 +288,7 @@ const Clientes: React.FC = () => {
                       )}
                     </div>
                     
-                    <div className="flex items-center gap-0 w-auto">
+                    <div className="flex items-center gap-0 w-auto" style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-end', paddingLeft: '10px', width: '60px', marginTop: '-8px'}}>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button

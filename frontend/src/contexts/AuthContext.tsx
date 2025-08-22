@@ -57,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 	const bootstrap = async () => {
 		const token = localStorage.getItem('auth_token');
+      
 		if (!token) {
         setIsAuthenticated(false);
         setUser(null);
@@ -71,10 +72,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 			setUserRole(role);
 			setIsAdmin(user.roles?.includes('admin') || false);
 			setIsApproved((user as any).status ? (user as any).status === 'approved' : true);
-		} catch {
+		} catch (error) {
 			localStorage.removeItem('auth_token');
         setIsAuthenticated(false);
         setUser(null);
+			// Redirecionar para login se estiver em uma rota protegida
+			if (location.pathname.startsWith('/app')) {
+				navigate('/app/login', { replace: true });
+			}
 		} finally {
         setIsLoading(false);
       }

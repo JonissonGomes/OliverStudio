@@ -20,7 +20,7 @@ export const useEventos = () => {
       setLoading(true);
       const data = await apiRequest<any[]>(`/eventos`);
       const formatted: Event[] = (data || []).map((e: any) => ({
-        id: e.id,
+        id: String(e._id), // ✅ Usar _id do MongoDB
         cliente: e.cliente,
         email: e.email,
         telefone: e.telefone,

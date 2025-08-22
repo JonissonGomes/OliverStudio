@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEventos } from '@/hooks/useEventos';
 import { useClientes } from '@/hooks/useClientes';
 import { useCombinedFotografos } from '@/hooks/useCombinedFotografos';
+import { useDashboard } from '@/hooks/useDashboard';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Dashboard: React.FC = () => {
   const { eventos } = useEventos();
   const { clientes } = useClientes();
   const { fotografos } = useCombinedFotografos();
+  const { data: dashboardData, loading: dashboardLoading } = useDashboard();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const getEventColor = (tipoEvento: string) => {
@@ -52,12 +54,12 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const eventosDoHoje = eventos.filter(evento => evento.data === new Date().toISOString().split('T')[0]);
+  const eventosDoHoje = dashboardData?.eventosHoje || [];
   const eventosDataSelecionada = selectedDate 
     ? eventos.filter(evento => evento.data === selectedDate).sort((a, b) => a.inicio.localeCompare(b.inicio))
     : [];
 
-  const totalReceita = eventos.filter((e) => e.status === 'concluido').reduce((sum, evento) => sum + evento.preco, 0);
+  const totalReceita = dashboardData?.totalReceita || 0;
 
   const exportToExcel = () => {
     const exportData = eventos.map(evento => ({
@@ -113,7 +115,9 @@ const Dashboard: React.FC = () => {
             <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-lg sm:text-2xl font-bold text-primary">{eventos.length}</div>
+            <div className="text-lg sm:text-2xl font-bold text-primary">
+              {dashboardLoading ? '...' : dashboardData?.totalEventos || 0}
+            </div>
           </CardContent>
         </Card>
 
@@ -123,7 +127,9 @@ const Dashboard: React.FC = () => {
             <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-lg sm:text-2xl font-bold text-primary">{clientes.length}</div>
+            <div className="text-lg sm:text-2xl font-bold text-primary">
+              {dashboardLoading ? '...' : dashboardData?.totalClientes || 0}
+            </div>
           </CardContent>
         </Card>
 
@@ -144,7 +150,7 @@ const Dashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-lg sm:text-2xl font-bold text-primary">
-              {totalReceita.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              {dashboardLoading ? '...' : totalReceita.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
             </div>
           </CardContent>
         </Card>
@@ -197,52 +203,59 @@ const Dashboard: React.FC = () => {
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Eventos de Hoje</CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 overflow-hidden">
-              {eventosDoHoje.length > 0 ? (
-                <div className={`space-y-2 ${eventosDoHoje.length > 1 ? 'h-full max-h-80 xl:max-h-none overflow-y-auto' : ''}`}>
+            <CardContent className="flex-1">
+              {dashboardLoading ? (
+                <div className="flex flex-col items-center justify-center py-6 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
+                  <p className="text-muted-foreground text-sm">Carregando...</p>
+                </div>
+              ) : eventosDoHoje.length > 0 ? (
+                <div className={`space-y-3 ${eventosDoHoje.length > 1 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   {eventosDoHoje.map((evento) => {
                     return (
-                      <div key={evento.id} className="p-2 border rounded-lg space-y-2">
+                      <div key={evento.id} className="p-3 border rounded-lg space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-sm">{evento.cliente}</h4>
-                          <Badge 
-                            className={`text-xs ${evento.status === 'pendente' ? 'bg-yellow-400 text-black' : evento.status === 'cancelado' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`}
-                          >
+                          <h4 className="font-semibold text-lg">{evento.cliente}</h4>
+                          <Badge className={`text-xs ${evento.status === 'pendente' ? 'bg-yellow-400 text-black' : evento.status === 'cancelado' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`}>
                             {evento.status === 'pendente' ? 'Pendente' : evento.status === 'cancelado' ? 'Cancelado' : 'Concluído'}
                           </Badge>
                         </div>
                         
-                        <div className="mb-2">
-                          <Badge className={`text-xs ${getEventTypeColor(evento.tipoEvento)}`}>
+                        <div className="mb-3">
+                          <Badge className={`mb-2 ${getEventTypeColor(evento.tipoEvento)}`}>
                             {TIPOS_EVENTO.find(t => t.value === evento.tipoEvento)?.label}
                           </Badge>
                         </div>
                         
-                        <div className="space-y-1 text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            <span>{evento.inicio} - {evento.termino}</span>
+                        <div className="space-y-2 text-sm text-muted-foreground mb-3">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4" />
+                            {evento.inicio} - {evento.termino}
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Coins className="h-3 w-3" />
-                            <span>{evento.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                          <div className="flex items-center gap-2">
+                            <Building2 className="h-4 w-4" />
+                            <span className="text-muted-foreground">{evento.cidade}</span>
                           </div>
-                          {evento.local && (
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {evento.local.startsWith('http://') || evento.local.startsWith('https://') ? (
-                                <a href={evento.local} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Ver local</a>
-                              ) : (
-                                <span>{evento.local}</span>
-                              )}
-                            </div>
-                          )}
-                          {evento.cidade && (
-                            <div className="flex items-center gap-1">
-                              <Building2 className="h-3 w-3" />
-                              <span className="text-muted-foreground">{evento.cidade}</span>
-                            </div>
-                          )}
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-4 w-4" />
+                            {evento.local.startsWith('http://') || evento.local.startsWith('https://') ? (
+                              <a 
+                                href={evento.local} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline"
+                                title={evento.local}
+                              >
+                                Ver local
+                              </a>
+                            ) : (
+                              evento.local
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Coins className="h-4 w-4" />
+                            {evento.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </div>
                         </div>
                         
                         {evento.fotografos && evento.fotografos.length > 0 && (
