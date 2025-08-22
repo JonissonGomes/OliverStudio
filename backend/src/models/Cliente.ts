@@ -10,6 +10,12 @@ export interface ClienteDocument extends Document {
 	mensagem?: string;
 	origem?: 'instagram' | 'facebook' | 'linkedin' | 'indicacao' | 'outros' | string;
 	eventos: string[];
+	// Campos para rastrear conversão de leads
+	convertedFromLead?: boolean;
+	leadConversionDate?: Date;
+	leadSource?: string; // origem do lead (instagram, facebook, etc.)
+	leadMessage?: string; // mensagem original do lead
+	leadEventType?: string; // tipo de evento do lead
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -25,6 +31,12 @@ const ClienteSchema = new Schema<ClienteDocument>(
 		mensagem: { type: String },
 		origem: { type: String },
 		eventos: { type: [String], default: [] },
+		// Campos para rastrear conversão de leads
+		convertedFromLead: { type: Boolean, default: false },
+		leadConversionDate: { type: Date },
+		leadSource: { type: String },
+		leadMessage: { type: String },
+		leadEventType: { type: String },
 	},
 	{ timestamps: true }
 );

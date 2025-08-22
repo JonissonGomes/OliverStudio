@@ -10,6 +10,8 @@ import eventosRoutes from './routes/eventos';
 import fotografosRoutes from './routes/fotografos';
 import usersRoutes from './routes/users';
 import analyticsRoutes from './routes/analytics';
+import dashboardRoutes from './routes/dashboard';
+import leadsRoutes from './routes/leads';
 import publicRoutes from './routes/public';
 
 const app = express();
@@ -60,6 +62,8 @@ app.use('/eventos', eventosRoutes);
 app.use('/fotografos', fotografosRoutes);
 app.use('/users', usersRoutes);
 app.use('/analytics', analyticsRoutes);
+app.use('/dashboard', dashboardRoutes);
+app.use('/leads', leadsRoutes);
 app.use('/public', publicRoutes);
 
 const PORT = Number(process.env.PORT || 8081);
