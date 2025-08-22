@@ -9,7 +9,7 @@ import { useClientes } from '@/hooks/useClientes';
 import { useEventos } from '@/hooks/useEventos';
 import { InputMask } from '@/components/ui/input-mask';
 import { Cliente, TIPOS_EVENTO } from '@/types';
-import { Plus, Edit, Trash2, Search, Users, Mail, Phone, MapPin, Calendar, UserPlus } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Users, Mail, Phone, MapPin, Calendar, UserPlus, Globe } from 'lucide-react';
 import { getEventTypeColor } from '@/utils/eventColors';
 import { useToast } from '@/hooks/use-toast';
 
@@ -228,7 +228,7 @@ const Clientes: React.FC = () => {
                           <Badge variant="secondary">Lead</Badge>
                         )}
                         {cliente.convertedFromLead && (
-                          <Badge variant="outline" className="text-xs">
+                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-300 dark:border-blue-800">
                             <UserPlus className="h-3 w-3 mr-1" />
                             Ex-Lead
                           </Badge>
@@ -240,22 +240,33 @@ const Clientes: React.FC = () => {
                       
                       {/* Informações de conversão de lead */}
                       {cliente.convertedFromLead && (
-                        <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-md border border-blue-200 dark:border-blue-800">
-                          <div className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">
-                            Convertido de Lead
+                        <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <div className="flex items-center gap-2 mb-2">
+                            <UserPlus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                            <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+                              Convertido de Lead
+                            </span>
                           </div>
-                          <div className="space-y-1 text-xs text-blue-600 dark:text-blue-400">
-                            {cliente.leadConversionDate && (
-                              <div>Data: {new Date(cliente.leadConversionDate).toLocaleDateString('pt-BR')}</div>
-                            )}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-600 dark:text-blue-400">
                             {cliente.leadSource && (
-                              <div>Origem: {cliente.leadSource}</div>
+                              <div className="flex items-center gap-1">
+                                <span className="font-medium">Origem:</span>
+                                <span className="capitalize">{cliente.leadSource}</span>
+                              </div>
                             )}
                             {cliente.leadEventType && (
-                              <div>Tipo: {cliente.leadEventType}</div>
+                              <div className="flex items-center gap-1">
+                                <span className="font-medium">Tipo:</span>
+                                <span className="capitalize">{cliente.leadEventType}</span>
+                              </div>
                             )}
                             {cliente.leadMessage && (
-                              <div className="line-clamp-2">Mensagem: {cliente.leadMessage}</div>
+                              <div className="sm:col-span-2">
+                                <span className="font-medium">Mensagem:</span>
+                                <p className="mt-1 text-blue-700 dark:text-blue-300 line-clamp-2 italic">
+                                  "{cliente.leadMessage}"
+                                </p>
+                              </div>
                             )}
                           </div>
                         </div>
