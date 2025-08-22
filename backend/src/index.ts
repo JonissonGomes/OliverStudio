@@ -27,10 +27,7 @@ const devDefaults = [
 	'http://[::1]:3000'
 ];
 
-const prodDefaults = [
-	'https://oliver-studio.vercel.app',
-	'https://oliver-studio-git-main-jonissongomes.vercel.app'
-];
+const prodDefaults: string[] = []; // Array vazio para permitir todas as origens
 
 const whitelist = allowedOrigins.length > 0 
 	? allowedOrigins 
@@ -61,7 +58,9 @@ app.use(cors({
 			console.log(`CORS: Whitelist: ${whitelist.join(', ')}`);
 		}
 		
-		if (whitelist.length === 0) return cb(null, true); // fallback aberto só se nada configurado
+		// Se whitelist estiver vazio, permite todas as origens
+		if (whitelist.length === 0) return cb(null, true);
+		
 		if (whitelist.some(o => sameOrigin(o, origin))) return cb(null, true);
 		
 		// Log de erro para debug
