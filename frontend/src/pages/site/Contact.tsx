@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import Header from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
 import { useToast } from "@/hooks/use-toast";
@@ -113,29 +113,6 @@ const Contact = () => {
     }
   };
 
-  const generateWhatsAppMessage = () => {
-    const message = `Olá! Gostaria de solicitar um orçamento para ${formData.tipoEvento || "um evento"}. 
-    
-Meus dados:
-Nome: ${formData.nome || "[Nome]"}
-Email: ${formData.email || "[Email]"}
-Telefone: ${formData.telefone || "[Telefone]"}
-Origem: ${formData.origem || "[Origem]"}
-
-${formData.mensagem ? `Detalhes: ${formData.mensagem}` : ""}
-
-Aguardo retorno!`;
-
-    return encodeURIComponent(message);
-  };
-
-  const handleWhatsAppRedirect = () => {
-    const phoneNumber = "5511999999999"; // Replace with actual number
-    const message = generateWhatsAppMessage();
-    const url = `https://wa.me/${phoneNumber}?text=${message}`;
-    window.open(url, "_blank");
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -146,8 +123,8 @@ Aguardo retorno!`;
             Entre em Contato
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Vamos conversar sobre o seu projeto! Preencha o formulário abaixo ou 
-            fale conosco diretamente pelo WhatsApp.
+            Vamos conversar sobre o seu projeto! Preencha o formulário abaixo e 
+            entraremos em contato em breve.
           </p>
         </div>
 
@@ -323,16 +300,6 @@ Aguardo retorno!`;
                       disabled={!isFormValid() || submitting}
                     >
                       Enviar Solicitação
-                    </Button>
-                    
-                    <Button 
-                      type="button"
-                      variant="whatsapp"
-                      onClick={handleWhatsAppRedirect}
-                      className="flex-1"
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Falar pelo WhatsApp
                     </Button>
                   </div>
                 </form>
