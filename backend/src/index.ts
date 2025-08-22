@@ -21,8 +21,20 @@ const allowedOrigins = rawOrigins
 	.split(',')
 	.map(o => o.trim())
 	.filter(Boolean);
-const devDefaults = ['http://localhost:3000','http://127.0.0.1:3000','http://[::1]:3000'];
-const whitelist = allowedOrigins.length > 0 ? allowedOrigins : (process.env.NODE_ENV === 'production' ? [] : devDefaults);
+const devDefaults = [
+	'http://localhost:3000',
+	'http://127.0.0.1:3000', 
+	'http://[::1]:3000'
+];
+
+const prodDefaults = [
+	'https://oliver-studio.vercel.app',
+	'https://oliver-studio-git-main-jonissongomes.vercel.app'
+];
+
+const whitelist = allowedOrigins.length > 0 
+	? allowedOrigins 
+	: (process.env.NODE_ENV === 'production' ? prodDefaults : devDefaults);
 
 function sameOrigin(a: string, b: string) {
 	try {
@@ -42,13 +54,24 @@ app.use((req, res, next) => {
 app.use(cors({
 	origin: (origin, cb) => {
 		if (!origin) return cb(null, true); // curl/SSR/same-origin
+		
+		// Log para debug em desenvolvimento
+		if (process.env.NODE_ENV !== 'production') {
+			console.log(`CORS: Origin request from ${origin}`);
+			console.log(`CORS: Whitelist: ${whitelist.join(', ')}`);
+		}
+		
 		if (whitelist.length === 0) return cb(null, true); // fallback aberto só se nada configurado
 		if (whitelist.some(o => sameOrigin(o, origin))) return cb(null, true);
+		
+		// Log de erro para debug
+		console.error(`CORS: Origin ${origin} not allowed`);
 		return cb(new Error('CORS: Origin not allowed'), false);
 	},
 	credentials: true,
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-	allowedHeaders: ['Content-Type', 'Authorization']
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+	exposedHeaders: ['Content-Length', 'X-Total-Count']
 }));
 
 app.use(helmet());
