@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "Oliver Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleção de rotas do backend Oliver (auth, clientes, eventos, fotógrafos, users, analytics)."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"secret123\",\n  \"fullName\": \"Nome Sobrenome\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth","login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"secret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth","me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Listar clientes",
+          "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/clientes", "host": ["{{baseUrl}}"], "path": ["clientes"] } }
+        },
+        {
+          "name": "Criar cliente",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/clientes", "host": ["{{baseUrl}}"], "path": ["clientes"] },
+            "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Cliente Teste\",\n  \"email\": \"cliente@example.com\",\n  \"telefone\": \"(11) 90000-0000\",\n  \"cidade\": \"São Paulo\"\n}" }
+          }
+        },
+        {
+          "name": "Atualizar cliente",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/clientes/:id", "host": ["{{baseUrl}}"], "path": ["clientes", ":id"] },
+            "body": { "mode": "raw", "raw": "{\n  \"cidade\": \"Campinas\"\n}" }
+          }
+        },
+        {
+          "name": "Remover cliente",
+          "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/clientes/:id", "host": ["{{baseUrl}}"], "path": ["clientes", ":id"] } }
+        }
+      ]
+    },
+    {
+      "name": "Eventos",
+      "item": [
+        {
+          "name": "Listar eventos",
+          "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/eventos", "host": ["{{baseUrl}}"], "path": ["eventos"] } }
+        },
+        {
+          "name": "Criar evento",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/eventos", "host": ["{{baseUrl}}"], "path": ["eventos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"clienteId\": \"<id_do_cliente>\",\n  \"cliente\": \"Nome do Cliente\",\n  \"email\": \"cliente@example.com\",\n  \"telefone\": \"(11) 90000-0000\",\n  \"tipoEvento\": \"estudio\",\n  \"data\": \"2025-01-01\",\n  \"inicio\": \"09:00\",\n  \"termino\": \"10:00\",\n  \"local\": \"Estúdio Central\",\n  \"descricao\": \"Sessão de fotos\",\n  \"preco\": 500,\n  \"fotografos\": [\"Fulano\"]\n}" }
+          }
+        },
+        {
+          "name": "Atualizar evento",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/eventos/:id", "host": ["{{baseUrl}}"], "path": ["eventos", ":id"] },
+            "body": { "mode": "raw", "raw": "{\n  \"local\": \"Estúdio B\"\n}" }
+          }
+        },
+        {
+          "name": "Remover evento",
+          "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/eventos/:id", "host": ["{{baseUrl}}"], "path": ["eventos", ":id"] } }
+        }
+      ]
+    },
+    {
+      "name": "Fotógrafos",
+      "item": [
+        { "name": "Listar fotógrafos", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/fotografos", "host": ["{{baseUrl}}"], "path": ["fotografos"] } } },
+        { "name": "Criar fotógrafo", "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/fotografos", "host": ["{{baseUrl}}"], "path": ["fotografos"] }, "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Fotógrafo A\",\n  \"email\": \"f@example.com\",\n  \"contato\": \"(11) 90000-0000\",\n  \"especialidades\": [\"estudio\"]\n}" } } },
+        { "name": "Atualizar fotógrafo", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/fotografos/:id", "host": ["{{baseUrl}}"], "path": ["fotografos", ":id"] }, "body": { "mode": "raw", "raw": "{\n  \"contato\": \"(11) 98888-0000\"\n}" } } },
+        { "name": "Remover fotógrafo", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/fotografos/:id", "host": ["{{baseUrl}}"], "path": ["fotografos", ":id"] } } }
+      ]
+    },
+    {
+      "name": "Users/Admin",
+      "item": [
+        { "name": "Listar usuários (admin)", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] } } },
+        { "name": "Atualizar status (admin)", "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/users/:id/status", "host": ["{{baseUrl}}"], "path": ["users", ":id", "status"] }, "body": { "mode": "raw", "raw": "{\n  \"status\": \"approved\"\n}" } } },
+        { "name": "Adicionar role (admin)", "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/users/:id/roles", "host": ["{{baseUrl}}"], "path": ["users", ":id", "roles"] }, "body": { "mode": "raw", "raw": "{\n  \"role\": \"admin\"\n}" } } },
+        { "name": "Remover role (admin)", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/users/:id/roles", "host": ["{{baseUrl}}"], "path": ["users", ":id", "roles"] }, "body": { "mode": "raw", "raw": "{\n  \"role\": \"admin\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Summary",
+          "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/analytics/summary?from=2025-01-01&to=2025-12-31&city=all", "host": ["{{baseUrl}}"], "path": ["analytics","summary"], "query": [ {"key":"from","value":"2025-01-01"}, {"key":"to","value":"2025-12-31"}, {"key":"city","value":"all"} ] } }
+        }
+      ]
+    }
+  ]
+} 

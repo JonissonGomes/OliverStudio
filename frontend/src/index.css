@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Oliver Estudios CRM Design System - Elegant Photography Studio Theme */
+
+@layer base {
+  :root {
+    /* Oliver Estudios Brand Colors */
+    --background: 0 0% 96.1%; /* Branco Creme #F5F5F5 */
+    --foreground: 0 0% 20%; /* Cinza Escuro #333333 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    --primary: 43 75% 47%; /* Dourado Suave #D4A017 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 225 43% 28%; /* Azul Marinho #2B3A67 */
+    --secondary-foreground: 0 0% 96.1%;
+
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 43 75% 47%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 43 75% 47%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar Oliver Theme - Cores mais leves e legíveis */
+    --sidebar-background: 0 0% 98%; /* Branco cremoso claro */
+    --sidebar-foreground: 0 0% 20%; /* Cinza escuro para texto */
+    --sidebar-primary: 43 75% 47%; /* Dourado para elementos ativos */
+    --sidebar-primary-foreground: 0 0% 100%; /* Branco para texto em elementos dourados */
+    --sidebar-accent: 0 0% 94%; /* Cinza muito claro para hover */
+    --sidebar-accent-foreground: 0 0% 20%; /* Cinza escuro para texto em hover */
+    --sidebar-border: 0 0% 89%; /* Borda sutil */
+    --sidebar-ring: 43 75% 47%; /* Dourado para focus */
+
+    /* Custom gradients and effects */
+    --gradient-elegant: linear-gradient(135deg, hsl(43 75% 47%), hsl(43 65% 55%));
+    --shadow-elegant: 0 10px 30px -10px hsl(43 75% 47% / 0.3);
+    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.1);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* FullCalendar custom styles */
+.fc-day-selected {
+  background-color: hsl(var(--primary) / 0.1) !important;
+  border: 1px solid hsl(var(--primary)) !important;
+}
+
+  .dark {
+    /* Keep same colors for consistency with Oliver Estudios branding */
+    --background: 0 0% 10.2%;
+    --foreground: 0 0% 96.1%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 96.1%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 96.1%;
+    --primary: 43 75% 47%;
+    --primary-foreground: 0 0% 10.2%;
+    --secondary: 225 43% 35%;
+    --secondary-foreground: 0 0% 96.1%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 43 75% 47%;
+    --accent-foreground: 0 0% 10.2%;
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 96.1%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 43 75% 47%;
+    
+    /* Sidebar cores claras mesmo no dark mode */
+    --sidebar-background: 0 0% 96%; /* Mantém claro mesmo no dark mode */
+    --sidebar-foreground: 0 0% 25%; /* Cinza escuro para contraste */
+    --sidebar-primary: 43 75% 50%; /* Dourado um pouco mais vibrante no dark */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 92%; /* Cinza claro para hover no dark mode */
+    --sidebar-accent-foreground: 0 0% 25%;
+    --sidebar-border: 0 0% 85%; /* Borda mais visível no dark mode */
+    --sidebar-ring: 43 75% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Oliver Estudios Custom Animations */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0);
+    }
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.8);
+  }
+}
