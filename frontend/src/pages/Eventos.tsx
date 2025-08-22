@@ -259,10 +259,20 @@ const Eventos: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.clienteId || !formData.email || !formData.data || !formData.inicio) {
+    // Validação mais detalhada dos campos obrigatórios
+    if (!formData.clienteId) {
       toast({
         title: "Erro",
-        description: "Selecione um cliente e preencha os campos obrigatórios",
+        description: "Cliente não selecionado. Por favor, selecione um cliente válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.email || !formData.data || !formData.inicio) {
+      toast({
+        title: "Erro",
+        description: "Preencha todos os campos obrigatórios: E-mail, Data e Horário de Início",
         variant: "destructive",
       });
       return;
@@ -331,13 +341,38 @@ const Eventos: React.FC = () => {
   };
 
   const handleEdit = (evento: Event) => {
+    // Verificar se o evento tem ID válido
+    if (!evento.id) {
+      toast({
+        title: "Erro",
+        description: "Evento inválido. ID não encontrado.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Limpar fotógrafos removidos do sistema antes de editar
     const fotografosLimpos = limparFotografosRemovidos(evento);
     
-    const matched = clientes.find(c => c.id === evento.clienteId) || clientes.find(c => c.nome === evento.cliente);
+    // Buscar o cliente correspondente - converter IDs para string para comparação
+    const matched = clientes.find(c => String(c.id) === evento.clienteId) || 
+                    clientes.find(c => c.nome === evento.cliente);
+    
+    // Garantir que o clienteId seja definido corretamente
+    const clienteId = matched ? String(matched.id) : evento.clienteId;
+    
+    if (!clienteId) {
+      toast({
+        title: "Erro",
+        description: "Cliente não encontrado. Verifique se o cliente ainda existe no sistema.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setFormData({ 
       ...evento, 
-      clienteId: matched?.id, 
+      clienteId: clienteId, 
       cliente: matched?.nome || evento.cliente,
       cidade: evento.cidade || '',
       fotografos: fotografosLimpos // Usar fotógrafos limpos
@@ -456,7 +491,7 @@ const Eventos: React.FC = () => {
     if (editId) {
       const ev = eventos.find((e) => e.id === editId);
       if (ev) {
-        const matched = clientes.find(c => c.id === ev.clienteId) || clientes.find(c => c.nome === ev.cliente);
+        const matched = clientes.find(c => String(c.id) === ev.clienteId) || clientes.find(c => c.nome === ev.cliente);
         setFormData({ 
           ...ev, 
           clienteId: matched?.id, 
@@ -536,6 +571,12 @@ const Eventos: React.FC = () => {
 
   // Função para limpar fotógrafos removidos do sistema
   const limparFotografosRemovidos = (evento: Event) => {
+    // Verificar se o evento tem ID válido
+    if (!evento.id) {
+      console.warn('Evento sem ID válido:', evento);
+      return evento.fotografos || [];
+    }
+    
     const fotografosValidos = fotografos.map(f => f.nome);
     const fotografosLimpos = evento.fotografos?.filter(f => fotografosValidos.includes(f)) || [];
     
@@ -555,6 +596,12 @@ const Eventos: React.FC = () => {
   useEffect(() => {
     if (eventos.length > 0 && fotografos.length > 0) {
       eventos.forEach(evento => {
+        // Verificar se o evento tem ID válido antes de processar
+        if (!evento.id) {
+          console.warn('Evento sem ID válido encontrado:', evento);
+          return;
+        }
+        
         const fotografosValidos = fotografos.map(f => f.nome);
         const temFotografoInvalido = evento.fotografos?.some(f => !fotografosValidos.includes(f));
         

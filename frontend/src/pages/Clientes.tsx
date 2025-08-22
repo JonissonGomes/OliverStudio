@@ -9,7 +9,7 @@ import { useClientes } from '@/hooks/useClientes';
 import { useEventos } from '@/hooks/useEventos';
 import { InputMask } from '@/components/ui/input-mask';
 import { Cliente, TIPOS_EVENTO } from '@/types';
-import { Plus, Edit, Trash2, Search, Users, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Users, Mail, Phone, MapPin, Calendar, UserPlus } from 'lucide-react';
 import { getEventTypeColor } from '@/utils/eventColors';
 import { useToast } from '@/hooks/use-toast';
 
@@ -227,11 +227,40 @@ const Clientes: React.FC = () => {
                         {cliente.isLead && (
                           <Badge variant="secondary">Lead</Badge>
                         )}
+                        {cliente.convertedFromLead && (
+                          <Badge variant="outline" className="text-xs">
+                            <UserPlus className="h-3 w-3 mr-1" />
+                            Ex-Lead
+                          </Badge>
+                        )}
                       </div>
                       {cliente.mensagem && cliente.isLead && (
                         <p className="text-xs text-muted-foreground mb-2 line-clamp-3">{cliente.mensagem}</p>
                       )}
                       
+                      {/* Informações de conversão de lead */}
+                      {cliente.convertedFromLead && (
+                        <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-md border border-blue-200 dark:border-blue-800">
+                          <div className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">
+                            Convertido de Lead
+                          </div>
+                          <div className="space-y-1 text-xs text-blue-600 dark:text-blue-400">
+                            {cliente.leadConversionDate && (
+                              <div>Data: {new Date(cliente.leadConversionDate).toLocaleDateString('pt-BR')}</div>
+                            )}
+                            {cliente.leadSource && (
+                              <div>Origem: {cliente.leadSource}</div>
+                            )}
+                            {cliente.leadEventType && (
+                              <div>Tipo: {cliente.leadEventType}</div>
+                            )}
+                            {cliente.leadMessage && (
+                              <div className="line-clamp-2">Mensagem: {cliente.leadMessage}</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
                       <div className="space-y-2 text-xs text-muted-foreground mb-3">
                         <div className="flex items-center gap-2">
                           <Mail className="h-3 w-3 flex-shrink-0" />
