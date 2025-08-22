@@ -1412,38 +1412,43 @@ const Eventos: React.FC = () => {
                      )}
                   </div>
                   
-                    <div className="flex items-center gap-0 w-auto">
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                          <Button size="icon" variant="ghost" className="text-destructive hover:bg-destructive/10" aria-label="Excluir evento">
+                    <div className="flex items-center gap-0 w-auto" style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-end', paddingLeft: '10px', width: '60px', marginTop: '-8px'}}>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="text-destructive hover:bg-destructive/10"
+                            aria-label="Excluir evento"
+                          >
                             <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Tem certeza que deseja excluir o evento de <strong>{evento.cliente}</strong>?
-                            Esta ação não pode ser desfeita.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(evento.id)}>
-                            Excluir
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                    <Button
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Tem certeza que deseja excluir o evento <strong>{evento.cliente}</strong>?
+                              Esta ação não pode ser desfeita.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(evento.id)}>
+                              Excluir
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                      <Button
                         size="icon"
                         variant="ghost"
-                      onClick={() => handleEdit(evento)}
+                        onClick={() => handleEdit(evento)}
                         aria-label="Editar evento"
-                    >
+                      >
                         <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
+                      </Button>
+                    </div>
                 </div>
               </CardContent>
             </Card>
