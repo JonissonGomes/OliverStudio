@@ -16,57 +16,9 @@ import publicRoutes from './routes/public';
 
 const app = express();
 
-const rawOrigins = process.env.CORS_ORIGIN || '';
-const allowedOrigins = rawOrigins
-	.split(',')
-	.map(o => o.trim())
-	.filter(Boolean);
-const devDefaults = [
-	'http://localhost:3000',
-	'http://127.0.0.1:3000', 
-	'http://[::1]:3000'
-];
-
-const prodDefaults: string[] = []; // Array vazio para permitir todas as origens
-
-const whitelist = allowedOrigins.length > 0 
-	? allowedOrigins 
-	: (process.env.NODE_ENV === 'production' ? prodDefaults : devDefaults);
-
-function sameOrigin(a: string, b: string) {
-	try {
-		const ua = new URL(a.replace(/\/$/, ''));
-		const ub = new URL(b.replace(/\/$/, ''));
-		return ua.protocol === ub.protocol && ua.host === ub.host; // compara host:port
-	} catch {
-		return a.replace(/\/$/, '') === b.replace(/\/$/, '');
-	}
-}
-
-app.use((req, res, next) => {
-	res.header('Vary', 'Origin');
-	next();
-});
-
+// Configuração CORS simplificada - permite todas as origens
 app.use(cors({
-	origin: (origin, cb) => {
-		if (!origin) return cb(null, true); // curl/SSR/same-origin
-		
-		// Log para debug em desenvolvimento
-		if (process.env.NODE_ENV !== 'production') {
-			console.log(`CORS: Origin request from ${origin}`);
-			console.log(`CORS: Whitelist: ${whitelist.join(', ')}`);
-		}
-		
-		// Se whitelist estiver vazio, permite todas as origens
-		if (whitelist.length === 0) return cb(null, true);
-		
-		if (whitelist.some(o => sameOrigin(o, origin))) return cb(null, true);
-		
-		// Log de erro para debug
-		console.error(`CORS: Origin ${origin} not allowed`);
-		return cb(new Error('CORS: Origin not allowed'), false);
-	},
+	origin: true, // Permite todas as origens
 	credentials: true,
 	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
 	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
