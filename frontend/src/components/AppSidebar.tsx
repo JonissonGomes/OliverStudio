@@ -180,7 +180,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <NavLink 
-                to="/profile"
+                to="/app/profile"
                 className={({ isActive }) => 
                   isActive 
                     ? 'bg-sidebar-accent text-sidebar-primary font-medium' 

@@ -34,6 +34,12 @@ export interface Cliente {
   origem?: string;
   eventos: string[];
   isLead?: boolean;
+  // Campos para rastrear conversão de leads
+  convertedFromLead?: boolean;
+  leadConversionDate?: string;
+  leadSource?: string;
+  leadMessage?: string;
+  leadEventType?: string;
 }
 
 export interface Fotografo {
