@@ -288,7 +288,7 @@ const Clientes: React.FC = () => {
                       )}
                     </div>
                     
-                    <div className="flex items-center gap-0 w-auto">
+                    <div className="flex items-center gap-0 w-auto" style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-end', paddingLeft: '10px', width: '60px', marginTop: '-8px'}}>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
