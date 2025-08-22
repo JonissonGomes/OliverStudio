@@ -53,7 +53,7 @@ const Index = () => {
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
           <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
             Capturamos
-            <span className="block bg-gradient-to-r from-photography-gold to-accent bg-clip-text text-transparent">
+            <span className="block text-foreground">
               Momentos Únicos
             </span>
           </h1>
