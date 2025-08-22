@@ -18,8 +18,26 @@ export const useClientes = () => {
 
     try {
       setLoading(true);
-      const data = await apiRequest<Cliente[]>(`/clientes`);
-      setClientes(data);
+      const data = await apiRequest<any[]>(`/clientes`);
+      const formatted: Cliente[] = (data || []).map((c: any) => ({
+        id: String(c._id), // ✅ Converter _id para id
+        nome: c.nome,
+        email: c.email,
+        telefone: c.telefone,
+        cidade: c.cidade,
+        dataNascimento: c.dataNascimento,
+        mensagem: c.mensagem,
+        origem: c.origem,
+        eventos: c.eventos || [],
+        isLead: c.isLead,
+        // Campos de conversão de leads
+        convertedFromLead: c.convertedFromLead,
+        leadConversionDate: c.leadConversionDate,
+        leadSource: c.leadSource,
+        leadMessage: c.leadMessage,
+        leadEventType: c.leadEventType,
+      }));
+      setClientes(formatted);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar clientes');
@@ -94,8 +112,23 @@ export const useLeads = () => {
     }
     try {
       setLoading(true);
-      const data = await apiRequest<Cliente[]>(`/clientes/leads`);
-      setLeads(data);
+      const data = await apiRequest<any[]>(`/leads`);
+      
+      // Converter dados do backend para o formato esperado pelo frontend
+      const formattedLeads = (data || []).map((l: any) => ({
+        id: String(l._id),
+        nome: l.nome,
+        email: l.email,
+        telefone: l.telefone,
+        tipoEvento: l.tipoEvento,
+        mensagem: l.mensagem,
+        origem: l.origem,
+        comoConheceu: l.comoConheceu,
+        eventos: [],
+        isLead: true
+      }));
+      
+      setLeads(formattedLeads);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar leads');
@@ -109,4 +142,46 @@ export const useLeads = () => {
   }, [user]);
 
   return { leads, loading, error, refetch: fetchLeads };
+};
+
+export const useLeadConversionAnalytics = () => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+
+  const fetchAnalytics = async (from?: string, to?: string) => {
+    if (!user) {
+      setData(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (from) params.append('from', from);
+      if (to) params.append('to', to);
+      
+      const url = `/analytics/lead-conversion${params.toString() ? `?${params.toString()}` : ''}`;
+      const analyticsData = await apiRequest<any>(url);
+      setData(analyticsData);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar analytics de conversão');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [user]);
+
+  return { 
+    data, 
+    loading, 
+    error, 
+    refetch: fetchAnalytics 
+  };
 };
